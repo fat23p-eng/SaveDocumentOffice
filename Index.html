@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --navy:#0B2545;
+      --navy-2:#123a6b;
+      --navy-3:#1d4d8c;
+      --orange:#F2994A;
+      --orange-dark:#E07B1A;
+      --gold:#D4AF37;
+      --white:#FFFFFF;
+      --bg:#F4F6FA;
+      --text:#1d2433;
+      --muted:#6b7686;
+      --radius:14px;
+      --shadow: 0 8px 24px rgba(11,37,69,0.12);
+    }
+    *{box-sizing:border-box;}
+    html,body{
+      margin:0;padding:0;
+      font-family:'Sarabun',sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .hidden{display:none !important;}
+
+    #loginScreen{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(135deg, var(--navy) 0%, var(--navy-3) 55%, var(--navy-2) 100%);
+      padding:24px;
+    }
+    .loginCard{
+      background:var(--white);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      width:100%;
+      max-width:380px;
+      padding:36px 32px 32px;
+      text-align:center;
+      border-top:5px solid var(--gold);
+      position:relative;
+    }
+    .logoWrap{display:flex;justify-content:center;margin-bottom:10px;}
+    .loginCard h1{font-size:19px;margin:6px 0 2px;color:var(--navy);font-weight:700;}
+    .loginCard p.sub{font-size:13px;color:var(--muted);margin:0 0 22px;}
+    .field{margin-bottom:16px;text-align:left;}
+    .field label{display:block;font-size:13px;font-weight:600;color:var(--navy);margin-bottom:6px;}
+    select, input[type="password"], input[type="text"], textarea{
+      width:100%;padding:11px 13px;border:1.5px solid #dfe4ee;border-radius:10px;
+      font-family:'Sarabun',sans-serif;font-size:14px;background:var(--white);color:var(--text);
+      outline:none;transition:border-color .15s;
+    }
+    select:focus, input:focus, textarea:focus{border-color:var(--orange);}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:10px;
+      padding:11px 18px;font-family:'Sarabun',sans-serif;font-size:14px;font-weight:600;cursor:pointer;
+      transition:transform .12s, box-shadow .12s, opacity .12s;}
+    .btn:active{transform:scale(.97);}
+    .btn-primary{background:linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 100%);color:var(--white);
+      width:100%;box-shadow:0 6px 14px rgba(224,123,26,0.35);}
+    .btn-primary:hover{box-shadow:0 8px 18px rgba(224,123,26,0.45);}
+    .btn-gold{background:linear-gradient(135deg, var(--gold) 0%, #b8932a 100%);color:var(--navy);
+      box-shadow:0 6px 14px rgba(212,175,55,0.35);}
+    .btn-small{padding:6px 12px;font-size:12.5px;border-radius:8px;}
+    .btn-ghost{background:#eef3fb;color:var(--navy);}
+    .errMsg{color:#c0392b;font-size:13px;margin-top:4px;min-height:18px;text-align:left;}
+
+    #appScreen{min-height:100vh;display:flex;flex-direction:column;}
+    header.topbar{background:var(--navy);color:var(--white);padding:14px 22px;display:flex;
+      align-items:center;justify-content:space-between;box-shadow:0 2px 10px rgba(0,0,0,0.15);
+      border-bottom:3px solid var(--gold);}
+    .topbar-left{display:flex;align-items:center;gap:12px;}
+    .topbar-left h2{font-size:16px;margin:0;font-weight:700;}
+    .topbar-left .tag{font-size:11.5px;color:#cfe0ff;margin-top:1px;}
+    .topbar-right{display:flex;align-items:center;gap:14px;font-size:13.5px;}
+    .userChip{background:rgba(255,255,255,0.1);padding:6px 12px;border-radius:20px;display:flex;align-items:center;gap:6px;}
+    .roleTag{font-size:10.5px;background:var(--gold);color:var(--navy);padding:1px 8px;border-radius:10px;font-weight:700;margin-left:6px;}
+    .roleTag.view{background:#cfe0ff;}
+    .logoutBtn{background:var(--orange);color:var(--white);border:none;padding:7px 14px;border-radius:20px;
+      font-size:13px;font-weight:600;cursor:pointer;font-family:'Sarabun',sans-serif;}
+
+    main{flex:1;padding:24px;max-width:1180px;margin:0 auto;width:100%;}
+    .grid{display:grid;grid-template-columns: 360px 1fr;gap:20px;align-items:start;}
+    @media (max-width: 880px){.grid{grid-template-columns: 1fr;}}
+    .card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;}
+    .card h3{font-size:15px;color:var(--navy);margin:0 0 14px;display:flex;align-items:center;gap:8px;font-weight:700;}
+    .goldbar{width:28px;height:3px;background:var(--gold);border-radius:2px;display:inline-block;}
+
+    .dropzone{border:2px dashed #c9d3e6;border-radius:12px;padding:22px 14px;text-align:center;cursor:pointer;
+      transition:.15s;background:#fafbfd;margin-bottom:14px;}
+    .dropzone.dragover{border-color:var(--orange);background:#fff4e9;}
+    .dropzone p{margin:8px 0 0;font-size:13px;color:var(--muted);}
+    .dropzone .fname{margin-top:8px;font-size:13px;font-weight:600;color:var(--navy);word-break:break-all;}
+
+    .filterRow{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+    .filterRow > div{flex:1;min-width:160px;}
+    .filterRow label{font-size:12px;font-weight:600;color:var(--navy);display:block;margin-bottom:5px;}
+
+    .fileItem{display:flex;align-items:flex-start;gap:12px;padding:13px 10px;border-radius:10px;
+      transition:.12s;border-bottom:1px solid #eef1f7;}
+    .fileItem:last-child{border-bottom:none;}
+    .fileItem:hover{background:#f7f9fd;}
+    .fileIcon{width:38px;height:38px;flex-shrink:0;border-radius:9px;
+      background:linear-gradient(135deg, var(--navy-3), var(--navy));display:flex;align-items:center;justify-content:center;}
+    .fileInfo{flex:1;min-width:0;}
+    .fileInfo a.fname{color:var(--navy);font-weight:600;font-size:14px;text-decoration:none;word-break:break-all;}
+    .fileInfo a.fname:hover{color:var(--orange-dark);text-decoration:underline;}
+    .metaRow{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;font-size:12px;color:var(--muted);}
+    .pill{background:#eef3fb;color:var(--navy);padding:2px 9px;border-radius:12px;font-size:11.5px;font-weight:600;}
+    .pill.gold{background:#fbf3da;color:#8a6d1d;}
+    .note{font-size:12.5px;color:var(--muted);margin-top:3px;}
+    .actionCol{display:flex;flex-direction:column;gap:4px;flex-shrink:0;}
+    .iconBtn{border:none;background:none;cursor:pointer;opacity:.55;padding:4px;border-radius:6px;}
+    .iconBtn:hover{opacity:1;}
+    .delBtn{color:#c0392b;}
+    .delBtn:hover{background:#fdeceb;}
+    .editBtn{color:#185fa5;}
+    .editBtn:hover{background:#eaf1fb;}
+
+    .editForm{flex:1;display:flex;flex-direction:column;gap:6px;}
+    .editForm .row2{display:flex;gap:6px;}
+    .editForm select, .editForm textarea, .editForm input{font-size:12.5px;padding:6px 8px;}
+    .editFormBtns{display:flex;gap:6px;margin-top:2px;}
+
+    #emptyState{text-align:center;padding:34px 10px;color:var(--muted);font-size:13.5px;}
+    #loadingState{text-align:center;padding:30px;color:var(--muted);font-size:13.5px;}
+
+    .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(10px);
+      background:var(--navy);color:var(--white);padding:11px 20px;border-radius:10px;font-size:13.5px;
+      box-shadow:var(--shadow);opacity:0;transition:.25s;pointer-events:none;z-index:99;border-left:4px solid var(--gold);}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+    .toast.error{border-left-color:#c0392b;}
+
+    .spinner{width:16px;height:16px;border:2.5px solid rgba(255,255,255,0.4);border-top-color:#fff;
+      border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+  </style>
+</head>
+<body>
+
+  <div id="loginScreen">
+    <div class="loginCard">
+      <div class="logoWrap">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="32" r="31" fill="#0B2545"/>
+          <circle cx="32" cy="32" r="31" stroke="#D4AF37" stroke-width="2"/>
+          <path d="M20 18H38L44 24V46C44 47.1 43.1 48 42 48H20C18.9 48 18 47.1 18 46V20C18 18.9 18.9 18 20 18Z" fill="#FFFFFF"/>
+          <path d="M38 18V24H44L38 18Z" fill="#D4AF37"/>
+          <rect x="22" y="29" width="16" height="2.4" rx="1.2" fill="#0B2545"/>
+          <rect x="22" y="34" width="16" height="2.4" rx="1.2" fill="#F2994A"/>
+          <rect x="22" y="39" width="10" height="2.4" rx="1.2" fill="#0B2545"/>
+        </svg>
+      </div>
+      <h1>ระบบจัดเก็บไฟล์เอกสารสำนักงาน</h1>
+      <p class="sub">เข้าสู่ระบบด้วยชื่อกลุ่มและรหัสผ่านของท่าน</p>
+
+      <div class="field">
+        <label for="loginGroup">กลุ่ม / ฝ่าย</label>
+        <select id="loginGroup"><option value="">-- กำลังโหลด... --</option></select>
+      </div>
+      <div class="field">
+        <label for="loginPass">รหัสผ่าน</label>
+        <input type="password" id="loginPass" placeholder="กรอกรหัสผ่าน" />
+      </div>
+      <button class="btn btn-primary" id="loginBtn" onclick="doLogin()">
+        <span id="loginBtnLabel">เข้าสู่ระบบ</span>
+      </button>
+      <div class="errMsg" id="loginErr"></div>
+    </div>
+  </div>
+
+  <div id="appScreen" class="hidden">
+    <header class="topbar">
+      <div class="topbar-left">
+        <svg width="34" height="34" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="32" r="31" fill="#0B2545"/>
+          <circle cx="32" cy="32" r="31" stroke="#D4AF37" stroke-width="2"/>
+          <path d="M20 18H38L44 24V46C44 47.1 43.1 48 42 48H20C18.9 48 18 47.1 18 46V20C18 18.9 18.9 18 20 18Z" fill="#FFFFFF"/>
+          <path d="M38 18V24H44L38 18Z" fill="#D4AF37"/>
+          <rect x="22" y="29" width="16" height="2.4" rx="1.2" fill="#0B2545"/>
+          <rect x="22" y="34" width="16" height="2.4" rx="1.2" fill="#F2994A"/>
+          <rect x="22" y="39" width="10" height="2.4" rx="1.2" fill="#0B2545"/>
+        </svg>
+        <div>
+          <h2>ระบบจัดเก็บไฟล์เอกสารสำนักงาน</h2>
+          <div class="tag">จัดเก็บ • ค้นหา • จัดการเอกสารบน Google Drive</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="userChip" id="userChip">👤 -</div>
+        <button class="logoutBtn" onclick="doLogout()">ออกจากระบบ</button>
+      </div>
+    </header>
+
+    <main>
+      <div class="grid">
+        <div class="card">
+          <h3><span class="goldbar"></span> อัพโหลดเอกสารใหม่</h3>
+
+          <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+            <svg width="40" height="40" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="24" cy="24" r="23" fill="#F4F6FA"/>
+              <path d="M24 14V30M24 14L18 20M24 14L30 20" stroke="#F2994A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M14 32V34C14 35.6569 15.3431 37 17 37H31C32.6569 37 34 35.6569 34 34V32" stroke="#0B2545" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <p>ลากไฟล์มาวาง หรือคลิกเพื่อเลือกไฟล์</p>
+            <div class="fname" id="selectedFileName"></div>
+          </div>
+          <input type="file" id="fileInput" class="hidden" onchange="onFilePicked(this.files)" />
+
+          <div class="field hidden" id="uploadAsGroupWrap">
+            <label>อัพโหลดในชื่อกลุ่ม (เฉพาะผู้ดูแลระบบ)</label>
+            <select id="uploadAsGroup"></select>
+          </div>
+
+          <div class="field">
+            <label>ประเภทเอกสาร</label>
+            <select id="uploadDocType"></select>
+          </div>
+          <div class="field">
+            <label>บันทึกช่วยจำ (ไม่บังคับ)</label>
+            <textarea id="uploadNote" rows="2" placeholder="รายละเอียดเพิ่มเติมเกี่ยวกับไฟล์นี้..."></textarea>
+          </div>
+          <button class="btn btn-gold" style="width:100%;" id="uploadBtn" onclick="doUpload()">
+            <span id="uploadBtnLabel">⬆ อัพโหลดไฟล์</span>
+          </button>
+        </div>
+
+        <div class="card">
+          <h3><span class="goldbar"></span> ค้นหาเอกสาร</h3>
+          <div class="filterRow">
+            <div id="filterGroupWrap">
+              <label>กลุ่มที่อัพโหลด</label>
+              <select id="filterGroup" onchange="loadFiles()"></select>
+            </div>
+            <div>
+              <label>ประเภทเอกสาร</label>
+              <select id="filterType" onchange="loadFiles()"></select>
+            </div>
+            <div>
+              <label>คำค้นหา (ชื่อไฟล์ / บันทึก)</label>
+              <input type="text" id="filterKeyword" placeholder="พิมพ์คำค้นหา..." onkeyup="debouncedLoad()" />
+            </div>
+          </div>
+
+          <div id="loadingState" class="hidden">
+            <span class="spinner" style="border-color:rgba(11,37,69,.25);border-top-color:var(--navy);"></span>
+            &nbsp; กำลังโหลดข้อมูล...
+          </div>
+          <div id="emptyState" class="hidden">📂 ไม่พบเอกสารที่ตรงกับเงื่อนไข</div>
+          <div id="fileList"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const ROLE_NORMAL = 'ทั่วไป';
+    const ROLE_VIEW_ALL = 'ดูทุกกลุ่ม';
+    const ROLE_ADMIN = 'ผู้ดูแลระบบ';
+
+    let currentGroup = null;
+    let currentRole = ROLE_NORMAL;
+    let selectedFileBase64 = null;
+    let selectedFileName = null;
+    let selectedFileMime = null;
+    let debounceTimer = null;
+    let lastFiles = [];
+
+    document.addEventListener('DOMContentLoaded', function () {
+      google.script.run.withSuccessHandler(populateLoginGroups).withFailureHandler(onErr).getInitData();
+    });
+
+    function populateLoginGroups(data) {
+      const sel = document.getElementById('loginGroup');
+      sel.innerHTML = '<option value="">-- เลือกกลุ่ม --</option>';
+      data.groups.forEach(g => {
+        const opt = document.createElement('option');
+        opt.value = g; opt.textContent = g;
+        sel.appendChild(opt);
+      });
+      window._initData = data;
+    }
+
+    function onErr(err) {
+      showToast(err.message || 'เกิดข้อผิดพลาด', true);
+    }
+
+    function doLogin() {
+      const group = document.getElementById('loginGroup').value;
+      const pass = document.getElementById('loginPass').value;
+      const errBox = document.getElementById('loginErr');
+      errBox.textContent = '';
+      if (!group || !pass) {
+        errBox.textContent = 'กรุณาเลือกกลุ่มและกรอกรหัสผ่าน';
+        return;
+      }
+      document.getElementById('loginBtnLabel').innerHTML = '<span class="spinner"></span>';
+      google.script.run.withSuccessHandler(function (res) {
+        document.getElementById('loginBtnLabel').textContent = 'เข้าสู่ระบบ';
+        if (res.success) {
+          currentGroup = res.groupName;
+          currentRole = res.role || ROLE_NORMAL;
+          enterApp();
+        } else {
+          errBox.textContent = res.message;
+        }
+      }).withFailureHandler(function (err) {
+        document.getElementById('loginBtnLabel').textContent = 'เข้าสู่ระบบ';
+        errBox.textContent = 'เกิดข้อผิดพลาด: ' + err.message;
+      }).login(group, pass);
+    }
+
+    function doLogout() {
+      currentGroup = null;
+      currentRole = ROLE_NORMAL;
+      document.getElementById('appScreen').classList.add('hidden');
+      document.getElementById('loginScreen').classList.remove('hidden');
+      document.getElementById('loginPass').value = '';
+    }
+
+    function enterApp() {
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('appScreen').classList.remove('hidden');
+
+      let roleTagHtml = '';
+      if (currentRole === ROLE_ADMIN) roleTagHtml = '<span class="roleTag">ผู้ดูแลระบบ</span>';
+      else if (currentRole === ROLE_VIEW_ALL) roleTagHtml = '<span class="roleTag view">ดูทุกกลุ่ม</span>';
+      document.getElementById('userChip').innerHTML = '👤 ' + currentGroup + roleTagHtml;
+
+      setupSelectors();
+      loadFiles();
+    }
+
+    function setupSelectors() {
+      const data = window._initData;
+
+      const uploadType = document.getElementById('uploadDocType');
+      uploadType.innerHTML = '';
+      data.docTypes.forEach(t => {
+        const o = document.createElement('option'); o.value = t; o.textContent = t;
+        uploadType.appendChild(o);
+      });
+
+      const filterType = document.getElementById('filterType');
+      filterType.innerHTML = '<option value="ทั้งหมด">ทุกประเภท</option>';
+      data.docTypes.forEach(t => {
+        const o = document.createElement('option'); o.value = t; o.textContent = t;
+        filterType.appendChild(o);
+      });
+
+      const filterGroupWrap = document.getElementById('filterGroupWrap');
+      const uploadAsWrap = document.getElementById('uploadAsGroupWrap');
+
+      if (currentRole === ROLE_NORMAL) {
+        // ทั่วไป: เห็นได้ "ของตัวเอง" + กลุ่มที่ทุกคนเห็นได้เสมอ (เช่น งานนายทะเบียนสหกรณ์, งานสำนักงาน)
+        const always = (data.alwaysVisibleGroups || []).filter(g => g !== currentGroup);
+        const allowedForMe = [currentGroup].concat(always);
+
+        filterGroupWrap.innerHTML = '<label>กลุ่มที่อัพโหลด</label><select id="filterGroup" onchange="loadFiles()"></select>';
+        const sel = document.getElementById('filterGroup');
+        const allOpt = document.createElement('option');
+        allOpt.value = 'ทั้งหมด'; allOpt.textContent = 'ทั้งหมด (เฉพาะที่มีสิทธิ์เห็น)';
+        sel.appendChild(allOpt);
+        allowedForMe.forEach(g => {
+          const o = document.createElement('option');
+          o.value = g; o.textContent = (g === currentGroup ? g + ' (ของฉัน)' : g);
+          sel.appendChild(o);
+        });
+
+        uploadAsWrap.classList.add('hidden');
+      } else {
+        filterGroupWrap.innerHTML =
+          '<label>กลุ่มที่อัพโหลด</label>' +
+          '<select id="filterGroup" onchange="loadFiles()"><option value="ทั้งหมด">ทุกกลุ่ม</option></select>';
+        const filterGroup = document.getElementById('filterGroup');
+        data.groups.forEach(g => {
+          const o = document.createElement('option'); o.value = g; o.textContent = g;
+          filterGroup.appendChild(o);
+        });
+
+        if (currentRole === ROLE_ADMIN) {
+          uploadAsWrap.classList.remove('hidden');
+          const uploadAsSel = document.getElementById('uploadAsGroup');
+          uploadAsSel.innerHTML = '';
+          data.groups.forEach(g => {
+            const o = document.createElement('option'); o.value = g; o.textContent = g;
+            if (g === currentGroup) o.selected = true;
+            uploadAsSel.appendChild(o);
+          });
+        } else {
+          uploadAsWrap.classList.add('hidden');
+        }
+      }
+    }
+
+    const dz = document.getElementById('dropzone');
+    ['dragenter', 'dragover'].forEach(evt =>
+      dz.addEventListener(evt, e => { e.preventDefault(); dz.classList.add('dragover'); })
+    );
+    ['dragleave', 'drop'].forEach(evt =>
+      dz.addEventListener(evt, e => { e.preventDefault(); dz.classList.remove('dragover'); })
+    );
+    dz.addEventListener('drop', e => {
+      if (e.dataTransfer.files.length) onFilePicked(e.dataTransfer.files);
+    });
+
+    function onFilePicked(files) {
+      if (!files || !files.length) return;
+      const file = files[0];
+      selectedFileName = file.name;
+      selectedFileMime = file.type || 'application/octet-stream';
+      document.getElementById('selectedFileName').textContent = '📎 ' + file.name;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        selectedFileBase64 = e.target.result.split(',')[1];
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function doUpload() {
+      if (!selectedFileBase64) {
+        showToast('กรุณาเลือกไฟล์ก่อน', true);
+        return;
+      }
+      const docType = document.getElementById('uploadDocType').value;
+      const note = document.getElementById('uploadNote').value;
+      const uploadAsSel = document.getElementById('uploadAsGroup');
+      const groupNameForPayload = (currentRole === ROLE_ADMIN && uploadAsSel && !document.getElementById('uploadAsGroupWrap').classList.contains('hidden'))
+        ? uploadAsSel.value : currentGroup;
+
+      document.getElementById('uploadBtnLabel').innerHTML = '<span class="spinner" style="border-color:rgba(11,37,69,.3);border-top-color:#0B2545;"></span> กำลังอัพโหลด...';
+
+      google.script.run.withSuccessHandler(function (res) {
+        document.getElementById('uploadBtnLabel').textContent = '⬆ อัพโหลดไฟล์';
+        if (res.success) {
+          showToast('อัพโหลดสำเร็จ: ' + res.fileName);
+          selectedFileBase64 = null; selectedFileName = null;
+          document.getElementById('selectedFileName').textContent = '';
+          document.getElementById('fileInput').value = '';
+          document.getElementById('uploadNote').value = '';
+          loadFiles();
+        } else {
+          showToast(res.message, true);
+        }
+      }).withFailureHandler(function (err) {
+        document.getElementById('uploadBtnLabel').textContent = '⬆ อัพโหลดไฟล์';
+        showToast('เกิดข้อผิดพลาด: ' + err.message, true);
+      }).uploadFile({
+        groupName: groupNameForPayload,
+        docType: docType,
+        note: note,
+        fileName: selectedFileName,
+        mimeType: selectedFileMime,
+        base64Data: selectedFileBase64
+      }, currentGroup, currentRole);
+    }
+
+    function debouncedLoad() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(loadFiles, 350);
+    }
+
+    function loadFiles() {
+      const filterGroupEl = document.getElementById('filterGroup');
+      const filters = {
+        groupName: filterGroupEl ? filterGroupEl.value : currentGroup,
+        docType: document.getElementById('filterType').value,
+        keyword: document.getElementById('filterKeyword').value
+      };
+      document.getElementById('loadingState').classList.remove('hidden');
+      document.getElementById('emptyState').classList.add('hidden');
+      document.getElementById('fileList').innerHTML = '';
+
+      google.script.run.withSuccessHandler(renderFiles).withFailureHandler(function (err) {
+        document.getElementById('loadingState').classList.add('hidden');
+        showToast('โหลดข้อมูลล้มเหลว: ' + err.message, true);
+      }).getFiles(filters, currentGroup, currentRole);
+    }
+
+    function renderFiles(files) {
+      lastFiles = files || [];
+      document.getElementById('loadingState').classList.add('hidden');
+      const list = document.getElementById('fileList');
+      list.innerHTML = '';
+      if (!files || !files.length) {
+        document.getElementById('emptyState').classList.remove('hidden');
+        return;
+      }
+      document.getElementById('emptyState').classList.add('hidden');
+
+      files.forEach(f => {
+        const item = document.createElement('div');
+        item.className = 'fileItem';
+        item.id = 'item-' + f.rowIndex;
+
+        let actions = '';
+        if (f.canManage) {
+          actions += '<button class="iconBtn delBtn" title="ลบเอกสาร" onclick="confirmDelete(' + f.rowIndex + ')">' +
+            '<svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M3 6H21M19 6L18.2 19C18.1 20.1 17.2 21 16 21H8C6.8 21 5.9 20.1 5.8 19L5 6M10 11V16M14 11V16M9 6V4C9 3.4 9.4 3 10 3H14C14.6 3 15 3.4 15 4V6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>' +
+          '</button>';
+        }
+        if (f.canEdit) {
+          actions += '<button class="iconBtn editBtn" title="แก้ไข" onclick="openEdit(' + f.rowIndex + ')">' +
+            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M11 4H4C3.4 4 3 4.4 3 5V20C3 20.6 3.4 21 4 21H19C19.6 21 20 20.6 20 20V13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M18.5 2.5C19.3 1.7 20.6 1.7 21.4 2.5C22.2 3.3 22.2 4.6 21.4 5.4L12 14.8L8 15.8L9 11.8L18.5 2.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>' +
+          '</button>';
+        }
+
+        item.innerHTML =
+          '<div class="fileIcon">' +
+            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 2H14L19 7V20C19 21.1 18.1 22 17 22H6C4.9 22 4 21.1 4 20V4C4 2.9 4.9 2 6 2Z" fill="#FFFFFF" fill-opacity="0.95"/><path d="M14 2V7H19L14 2Z" fill="#D4AF37"/></svg>' +
+          '</div>' +
+          '<div class="fileInfo">' +
+            '<a class="fname" href="' + escapeHtml(f.fileUrl) + '" target="_blank">' + escapeHtml(f.fileName || 'ไฟล์ไม่มีชื่อ') + '</a>' +
+            '<div class="metaRow">' +
+              '<span class="pill">' + escapeHtml(f.groupName || '') + '</span>' +
+              '<span class="pill gold">' + escapeHtml(f.docType || '') + '</span>' +
+              '<span>' + escapeHtml(f.date || '') + '</span>' +
+            '</div>' +
+            (f.note ? '<div class="note">📝 ' + escapeHtml(f.note) + '</div>' : '') +
+          '</div>' +
+          '<div class="actionCol">' + actions + '</div>';
+        list.appendChild(item);
+      });
+    }
+
+    function findFile(rowIndex) {
+      return lastFiles.find(f => f.rowIndex === rowIndex);
+    }
+
+    function openEdit(rowIndex) {
+      const f = findFile(rowIndex);
+      if (!f) return;
+      const item = document.getElementById('item-' + rowIndex);
+      const groups = window._initData.groups;
+      const types = window._initData.docTypes;
+
+      const groupOptions = groups.map(g => '<option value="' + escapeHtml(g) + '"' + (g === f.groupName ? ' selected' : '') + '>' + escapeHtml(g) + '</option>').join('');
+      const typeOptions = types.map(t => '<option value="' + escapeHtml(t) + '"' + (t === f.docType ? ' selected' : '') + '>' + escapeHtml(t) + '</option>').join('');
+
+      item.innerHTML =
+        '<div class="editForm">' +
+          '<div class="row2">' +
+            '<select id="edit-group-' + rowIndex + '">' + groupOptions + '</select>' +
+            '<select id="edit-type-' + rowIndex + '">' + typeOptions + '</select>' +
+          '</div>' +
+          '<textarea id="edit-note-' + rowIndex + '" rows="2">' + escapeHtml(f.note || '') + '</textarea>' +
+          '<div class="editFormBtns">' +
+            '<button class="btn btn-gold btn-small" onclick="saveEdit(' + rowIndex + ')">บันทึก</button>' +
+            '<button class="btn btn-ghost btn-small" onclick="loadFiles()">ยกเลิก</button>' +
+          '</div>' +
+        '</div>';
+    }
+
+    function saveEdit(rowIndex) {
+      const updates = {
+        groupName: document.getElementById('edit-group-' + rowIndex).value,
+        docType: document.getElementById('edit-type-' + rowIndex).value,
+        note: document.getElementById('edit-note-' + rowIndex).value
+      };
+      google.script.run.withSuccessHandler(function (res) {
+        if (res.success) { showToast('บันทึกการแก้ไขแล้ว'); loadFiles(); }
+        else { showToast(res.message, true); }
+      }).withFailureHandler(function (err) {
+        showToast('เกิดข้อผิดพลาด: ' + err.message, true);
+      }).editFile(rowIndex, updates, currentGroup, currentRole);
+    }
+
+    function confirmDelete(rowIndex) {
+      if (!confirm('ยืนยันการลบเอกสารนี้? (ไฟล์ใน Drive จะถูกย้ายไปถังขยะ)')) return;
+      google.script.run.withSuccessHandler(function (res) {
+        if (res.success) { showToast('ลบเรียบร้อยแล้ว'); loadFiles(); }
+        else { showToast(res.message, true); }
+      }).withFailureHandler(function (err) {
+        showToast('เกิดข้อผิดพลาด: ' + err.message, true);
+      }).deleteFile(rowIndex, currentGroup, currentRole);
+    }
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return str.toString()
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    let toastTimer = null;
+    function showToast(msg, isError) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast show' + (isError ? ' error' : '');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { t.className = 'toast'; }, 3200);
+    }
+  </script>
+</body>
+</html>
